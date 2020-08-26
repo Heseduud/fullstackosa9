@@ -1,11 +1,11 @@
 import express from 'express';
 import patientService from '../services/patientService';
-import patientValidator from '../utils';
+import { validateEntry, validatePatient } from '../utils';
 
 const router = express.Router();
 
 router.get('/', (_req, res) => {
-  res.send(patientService.getFilteredEntries());
+  res.send(patientService.getFilteredPatients());
 });
 
 router.get('/:id', (req, res) => {
@@ -18,24 +18,23 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  // const { name, dateOfBirth, ssn, gender, occupation } = req.body;
-  // const newPatientEntry = patientService.addEntry(
-  //   {
-  //     name,
-  //     dateOfBirth,
-  //     ssn,
-  //     gender,
-  //     occupation
-  //   }
-  // );
-
-  // res.json(newPatientEntry);
   try {
-    const newPatientEntry = patientValidator(req.body);
-    const addedEntry = patientService.addEntry(newPatientEntry);
+    const newPatient = validatePatient(req.body);
+    const addedPatient = patientService.addPatient(newPatient);
+    res.json(addedPatient);
+  } catch (e) {
+    res.status(400).send(e);
+  }
+});
+
+router.post('/:id/entries', (req, res) => {
+  try {
+    const newEntry = validateEntry(req.body);
+    const addedEntry = patientService.addEntry(newEntry, req.params.id);
     res.json(addedEntry);
   } catch (e) {
-    res.status(400).send(e.message);
+    console.error(e);
+    res.status(400).send(e);
   }
 });
 

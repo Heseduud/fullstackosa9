@@ -1,24 +1,24 @@
-import { Patient, NewPatientEntry } from '../types';
+import { Patient, NewPatientEntry, Entry, NewEntry } from '../types';
 import patients from '../../data/patients';
 import { v4 } from 'uuid';
 import { PublicPatient } from '../types';
 
-const getFilteredEntries = (): PublicPatient[] => {
+const getFilteredPatients = (): PublicPatient[] => {
   return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id, name, dateOfBirth, gender, occupation
   }));
 };
 
-const addEntry = (entry: NewPatientEntry): Patient => {
+const addPatient = (entry: NewPatientEntry): Patient => {
   const newId: string = v4();
 
-  const newEntry = {
+  const newPatient = {
     id: newId,
     ...entry
   };
 
-  patients.push(newEntry);
-  return newEntry;
+  patients.push(newPatient);
+  return newPatient;
 };
 
 const getSinglePatient = (id: string): Patient => {
@@ -30,4 +30,17 @@ const getSinglePatient = (id: string): Patient => {
   return toFind;
 };
 
-export default { getFilteredEntries, addEntry, getSinglePatient };
+const addEntry = (entry: NewEntry, id: string): Entry => {
+  const newId: string = v4();
+  const patient = getSinglePatient(id);
+
+  const newEntry = {
+    id: newId,
+    ...entry
+  } as Entry;
+
+  patient.entries.push(newEntry);
+  return newEntry;
+};
+
+export default { getFilteredPatients, addPatient, getSinglePatient, addEntry };

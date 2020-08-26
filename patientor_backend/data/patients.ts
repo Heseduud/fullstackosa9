@@ -1,5 +1,5 @@
 import { Patient, Gender } from '../src/types';
-import validatePatient from '../src/utils';
+import { validatePatient } from '../src/utils';
 
 const patients: Patient[] = [
     {
